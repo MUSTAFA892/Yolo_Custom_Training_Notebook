@@ -186,5 +186,5 @@ model.export(format="engine")
 - **Use YOLO for detection, pose estimation, and classification**
 - **Deploy model using ONNX or TensorRT**
 
-🚀 Happy training! Let me know if you need more improvements! 🎯
+
 
