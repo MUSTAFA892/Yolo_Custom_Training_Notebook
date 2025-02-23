@@ -1,9 +1,11 @@
 # Custom YOLO Training and Deployment Guide
 
+---
+
 ## 1️⃣ Introduction
 This repository provides a complete setup for training, validating, and testing custom YOLO models using a well-structured dataset. It supports multiple YOLO model types, including detection, pose estimation, and classification.
 
-Additionally, this repository allows you to create labeled datasets using **LabelImg**, making it easy to generate bounding box annotations for training custom models.
+Additionally, this repository allows you to create labeled datasets using **LabelImg**, making it easy to generate bounding box annotations for training custom models. You can also import datasets directly from **Roboflow**.
 
 ---
 
@@ -41,6 +43,11 @@ pip install ultralytics opencv-python numpy pyyaml matplotlib
 For Jupyter Notebook:
 ```bash
 pip install notebook
+```
+
+Additionally, to work with Roboflow, run:
+```bash
+!pip install roboflow
 ```
 
 ---
@@ -119,17 +126,21 @@ More details: [LabelImg GitHub](https://github.com/HumanSignal/labelImg)
 
 ## 6️⃣ Training the Custom YOLO Model
 
-### **Step 1: Train YOLOv8 Model**
-Run the following command inside your Jupyter Notebook:
-```python
-from ultralytics import YOLO
-
-# Load YOLOv8 model (Choose model: yolov8n, yolov8m, yolov8l, yolov8x)
-model = YOLO("yolov8m.pt")  # Using medium model
-
-# Train the model
-model.train(data="data/data.yaml", epochs=50, imgsz=640, batch=16, workers=4)
+### **Train YOLOv8 Model Using Command Line**
+You can also train your YOLO model via the command line. Here's the command for training a model:
+```bash
+yolo task=detect mode=train model=yolov8s.pt data=data.yaml epochs=100 imgsz=224 plots=True
 ```
+This command specifies:
+- **task**: Object detection (`detect`)
+- **mode**: Training (`train`)
+- **model**: The YOLOv8 model to use (you can select `yolov8n.pt`, `yolov8m.pt`, `yolov8l.pt`, or `yolov8x.pt`)
+- **data**: Path to the `data.yaml` file
+- **epochs**: Number of training epochs
+- **imgsz**: Image size (224 in this example, can be adjusted based on model requirements)
+- **plots**: Set to `True` to generate training plots
+
+---
 
 ### **Step 2: Validate Model**
 ```python
@@ -179,12 +190,33 @@ model.export(format="engine")
 
 ---
 
-## 9️⃣ Summary
+## 9️⃣ Importing Datasets from Roboflow
+
+You can easily import datasets directly from **Roboflow** using the following Python code:
+
+```python
+from roboflow import Roboflow
+
+# Initialize the Roboflow API with your API key
+rf = Roboflow(api_key="y2BO50RFoRosd6vUrc8r")
+
+# Access the desired project and dataset version
+project = rf.workspace("mohamed-el-afia-m2dc3").project("digitraffic")
+version = project.version(1)
+
+# Download the dataset in YOLOv8 format
+dataset = version.download("yolov8")
+```
+
+This will automatically download the dataset in a format compatible with YOLOv8 for training.
+
+---
+
+## 10️⃣ Summary
 - **Label images** using LabelImg
-- **Train custom YOLO models** with `data.yaml`
+- **Train custom YOLO models** with `data.yaml` (via Python or command line)
 - **Validate and test models** using `model.val()`
 - **Use YOLO for detection, pose estimation, and classification**
 - **Deploy model using ONNX or TensorRT**
-
-
+- **Import datasets directly from Roboflow** for easier access
 
